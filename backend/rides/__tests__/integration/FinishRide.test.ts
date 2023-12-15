@@ -1,18 +1,20 @@
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 
 import { RepositoryFactory } from '../../src/application/factory/RepositoryFactory';
+import { AccountGateway } from '../../src/application/gateway/AccountGateway';
 import { AcceptRide } from '../../src/application/usecases/AcceptRide';
 import { FinishRide } from '../../src/application/usecases/FinishRide';
 import { GetRide } from '../../src/application/usecases/GetRide';
 import { RequestRide } from '../../src/application/usecases/RequestRide';
-import { SignUp } from '../../src/application/usecases/SignUp';
 import { StartRide } from '../../src/application/usecases/StartRide';
 import { UpdatePosition } from '../../src/application/usecases/UpdatePosition';
 import { Connection } from '../../src/infra/database/Connection';
 import { PgPromiseAdapter } from '../../src/infra/database/PgPromiseAdapter';
 import { DatabaseRepositoryFactory } from '../../src/infra/factory/DatabaseRepositoryFactory';
+import { AccountGatewayHttp } from '../../src/infra/gateway/AccountGatewayHttp';
+import { FetchAdapter } from '../../src/infra/http/FetchAdapter';
 
-let signup: SignUp;
+let accountGateway: AccountGateway;
 let requestRide: RequestRide;
 let acceptRide: AcceptRide;
 let startRide: StartRide;
@@ -25,11 +27,11 @@ let repositoryFactory: RepositoryFactory;
 beforeEach(() => {
   connection = new PgPromiseAdapter();
   repositoryFactory = new DatabaseRepositoryFactory(connection);
-  signup = new SignUp(repositoryFactory);
-  requestRide = new RequestRide(repositoryFactory);
-  acceptRide = new AcceptRide(repositoryFactory);
+  accountGateway = new AccountGatewayHttp(new FetchAdapter());
+  requestRide = new RequestRide(repositoryFactory, accountGateway);
+  acceptRide = new AcceptRide(repositoryFactory, accountGateway);
   startRide = new StartRide(repositoryFactory);
-  getRide = new GetRide(repositoryFactory);
+  getRide = new GetRide(repositoryFactory, accountGateway);
   updatePosition = new UpdatePosition(repositoryFactory);
   finishRide = new FinishRide(repositoryFactory);
   vi.useFakeTimers();
@@ -53,7 +55,9 @@ test('Deve solicitar, aceitar, iniciar e atualizar a posição de uma corrida', 
     carPlate: '',
     password: '',
   };
-  const outputSignUpPassenger = await signup.execute(inputSignUpPassenger);
+  const outputSignUpPassenger = await accountGateway.signUp(
+    inputSignUpPassenger
+  );
   // given
   const inputRequestRide = {
     passengerId: outputSignUpPassenger.accountId,
@@ -77,7 +81,7 @@ test('Deve solicitar, aceitar, iniciar e atualizar a posição de uma corrida', 
     isDriver: true,
     password: '',
   };
-  const outputSignUpDriver = await signup.execute(inputSignUpDriver);
+  const outputSignUpDriver = await accountGateway.signUp(inputSignUpDriver);
   const inputAcceptRide = {
     rideId: outputRequestRide.rideId,
     driverId: outputSignUpDriver.accountId,

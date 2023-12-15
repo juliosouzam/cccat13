@@ -1,18 +1,19 @@
-import { RideRepository } from '../repositories/RideRepository';
-import { AccountRepository } from '../repositories/AccountRepository';
 import { RepositoryFactory } from '../factory/RepositoryFactory';
+import { AccountGateway } from '../gateway/AccountGateway';
+import { RideRepository } from '../repositories/RideRepository';
 
 export class AcceptRide {
   private rideRepository: RideRepository;
-  private accountRepository: AccountRepository;
 
-  constructor(private readonly repositoryFactory: RepositoryFactory) {
+  constructor(
+    private readonly repositoryFactory: RepositoryFactory,
+    private readonly accountGateway: AccountGateway
+  ) {
     this.rideRepository = this.repositoryFactory.createRideRepository();
-    this.accountRepository = this.repositoryFactory.createAccountRepository();
   }
 
   async execute(input: Input) {
-    const account = await this.accountRepository.getById(input.driverId);
+    const account = await this.accountGateway.getById(input.driverId);
     if (!account?.isDriver) throw new Error('Account is not from a Driver.');
     const ride = await this.rideRepository.getById(input.rideId);
     ride.accept(input.driverId);
