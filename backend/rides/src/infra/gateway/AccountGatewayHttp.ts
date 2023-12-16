@@ -11,4 +11,10 @@ export class AccountGatewayHttp implements AccountGateway {
   async signUp(input: any): Promise<any> {
     return this.httpClient.post(`http://localhost:3333/signup`, input);
   }
+
+  async verifyToken(token: string): Promise<any> {
+    return this.httpClient.post(`http://localhost:3333/verify_token`, {
+      token,
+    });
+  }
 }

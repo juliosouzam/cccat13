@@ -1,6 +1,6 @@
 drop schema IF EXISTS cccat13 cascade;
 create schema IF NOT EXISTS cccat13;
-create table cccat13.accounts (
+CREATE TABLE cccat13.accounts (
   id uuid,
   name text,
   email text,
@@ -15,7 +15,7 @@ create table cccat13.accounts (
   is_verified boolean,
   verification_code uuid
 );
-create table cccat13.rides (
+CREATE TABLE cccat13.rides (
   id uuid,
   passenger_id uuid,
   driver_id uuid,
@@ -28,10 +28,16 @@ create table cccat13.rides (
   to_long numeric,
   date timestamp
 );
-create TABLE cccat13.positions (
+CREATE TABLE cccat13.positions (
   id uuid primary key,
   ride_id uuid,
   lat numeric,
   long numeric,
   date timestamp
 );
+CREATE TABLE ride_projections (
+  ride_id uuid,
+  passenger_name text,
+  passenger_email text,
+  status text
+)

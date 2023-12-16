@@ -5,6 +5,7 @@ import { AccountGateway } from '../../src/application/gateway/AccountGateway';
 import { AcceptRide } from '../../src/application/usecases/AcceptRide';
 import { FinishRide } from '../../src/application/usecases/FinishRide';
 import { GetRide } from '../../src/application/usecases/GetRide';
+// import { GetRides } from '../../src/application/usecases/GetRides';
 import { RequestRide } from '../../src/application/usecases/RequestRide';
 import { StartRide } from '../../src/application/usecases/StartRide';
 import { UpdatePosition } from '../../src/application/usecases/UpdatePosition';
@@ -112,4 +113,7 @@ test('Deve solicitar, aceitar, iniciar e atualizar a posição de uma corrida', 
   expect(outputGetRide.status).toBe('completed');
   expect(outputGetRide.distance).toBe(10);
   expect(outputGetRide.fare).toBe(21);
+  // const getRides = new GetRides(connection, new CSVPresenter());
+  // const rides = await getRides.execute();
+  // console.log(rides, rides.length);
 });

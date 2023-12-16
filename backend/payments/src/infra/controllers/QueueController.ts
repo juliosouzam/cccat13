@@ -6,8 +6,12 @@ export class QueueController {
     private readonly queue: Queue,
     private readonly processPayment: ProcessPayment
   ) {
-    this.queue.consume('ride.finished', async (payload: any) => {
-      await this.processPayment.execute(payload);
-    });
+    this.queue.consume(
+      'ride.finished',
+      'ride.finished.process.payment',
+      async (payload: any) => {
+        await this.processPayment.execute(payload);
+      }
+    );
   }
 }

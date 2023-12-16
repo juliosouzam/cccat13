@@ -1,4 +1,4 @@
-import { Ride } from "../../domain/Ride";
+import { Ride } from '../../domain/Ride';
 
 export interface RideRepository {
   save(ride: Ride): Promise<void>;
@@ -6,4 +6,5 @@ export interface RideRepository {
   getById(rideId: string): Promise<Ride>;
   getActiveRidesByPassengerId(passengerId: string): Promise<any>;
   getActiveRidesByDriverId(driverId: string): Promise<any>;
+  list(): Promise<Ride[]>;
 }

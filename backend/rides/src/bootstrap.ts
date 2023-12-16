@@ -1,6 +1,8 @@
+import { UpdateRideProjection } from './application/handler/UpdateRideProjection';
 import { GetRide } from './application/usecases/GetRide';
 import { RequestRide } from './application/usecases/RequestRide';
 import { MainController } from './infra/controllers/MainController';
+import { QueueController } from './infra/controllers/QueueController';
 import { PgPromiseAdapter } from './infra/database/PgPromiseAdapter';
 import { DatabaseRepositoryFactory } from './infra/factory/DatabaseRepositoryFactory';
 import { AccountGatewayHttp } from './infra/gateway/AccountGatewayHttp';
@@ -19,8 +21,13 @@ async function main() {
   const httpServer = new FastifyAdapter({
     environment: 'development',
   });
-
+  const updateRideProjection = new UpdateRideProjection(
+    repositoryFactory,
+    accountGateway,
+    connection
+  );
   new MainController(httpServer, requestRide, getRide, queue);
+  new QueueController(queue, updateRideProjection);
   await httpServer.listen(process.env.PORT ? Number(process.env.PORT) : 3334);
 }
 

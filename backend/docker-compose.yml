@@ -11,7 +11,7 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - ./db.sql:/docker-entrypoint-initdb.d/db.sql
+      - ./create.sql:/docker-entrypoint-initdb.d/create.sql
 
   rabbitmq:
     image: rabbitmq:management-alpine

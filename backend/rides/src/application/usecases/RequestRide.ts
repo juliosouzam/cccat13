@@ -2,8 +2,9 @@ import { Ride } from '../../domain/Ride';
 import { RepositoryFactory } from '../factory/RepositoryFactory';
 import { AccountGateway } from '../gateway/AccountGateway';
 import { RideRepository } from '../repositories/RideRepository';
+import { Usecase } from './Usecase';
 
-export class RequestRide {
+export class RequestRide implements Usecase {
   private rideRepository: RideRepository;
 
   constructor(
@@ -47,4 +48,5 @@ type Input = {
     lat: number;
     long: number;
   };
+  token?: string;
 };

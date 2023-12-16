@@ -72,4 +72,31 @@ export class RideRepositoryDatabase implements RideRepository {
 
     return ridesData;
   }
+
+  async list(): Promise<Ride[]> {
+    const rides: Ride[] = [];
+    const ridesData = await this.connection.query(
+      'select * from cccat13.rides',
+      []
+    );
+
+    for (const rideData of ridesData) {
+      const ride = Ride.restore(
+        rideData.id,
+        rideData.status,
+        rideData.driver_id,
+        rideData.passenger_id,
+        parseFloat(rideData.from_lat),
+        parseFloat(rideData.from_long),
+        parseFloat(rideData.to_lat),
+        parseFloat(rideData.to_long),
+        rideData.date,
+        parseFloat(rideData.distance),
+        parseFloat(rideData.fare)
+      );
+      rides.push(ride);
+    }
+
+    return rides;
+  }
 }
